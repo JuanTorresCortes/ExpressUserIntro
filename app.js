@@ -20,7 +20,7 @@ app.get("/all-users", (req, res) => {
 
 // gets single user based on phone number /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 app.get("/single-user/:phoneNumber", (req, res) => {
-  const phoneNum = req.params.phoneNumber.replace(/[^0-9^]/g, ""); // sanitized the phone in parameters used to find user 0615802963
+  const phoneNum = req.params.phoneNumber.replace(/[^0-9^]/g, ""); // sanitized the phone using regular expression will remove all non-numeric char
 
   let userInfo = null; // place holder for user info to be render
   for (const user of usersList) {
@@ -125,7 +125,7 @@ app.put("/update-user/:email", (req, res) => {
 		updateUserInfo = {...req.body};
 	}
 
-	//replace back the information
+	//replace information
 	usersList.splice(findIndex, 1, updateUserInfo);
 
 	res.status(200).json({ message: "Success" });
