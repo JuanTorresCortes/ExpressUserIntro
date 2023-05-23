@@ -107,29 +107,35 @@ app.post("/new-user", (req, res) => {
 });
 
 // updates user ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-app.put("/update-user/:email", (req, res) => {
+app.put("/update-user/:userEmail", (req, res) => {
 	//find person using req.params
-	const email = req.params.email;
-	const findIndex = usersList.findIndex((person) => person.email === email);
+	const email = req.params.userEmail;
+	const findIndex = usersList.findIndex((user) => user.email === email);
 	if (findIndex === -1) {
-		return res.status(400).json({ success: false, message: "person not found" });
+		return res.status(400).json({ success: false, message: "user not found" });
 	}
 
 	// grab all the current persons original  information
-	const person = usersList[findIndex];
+	const user = usersList[findIndex];
   
 	//need to make a new object
-	let updateUserInfo = { ...person };
+	const updateUserInfo = { ...user };
 
-	if (req.body !== "" || req.body !== undefined) {
-		updateUserInfo = {...req.body};
-	}
-
-	//replace information
-	usersList.splice(findIndex, 1, updateUserInfo);
-
-	res.status(200).json({ message: "Success" });
-});
+	for(let key in req.body) {
+    console.log(typeof req.body[key])
+    if(typeof req.body[key] === 'object') {
+      updateUserInfo [key] = {
+        ...updateUserInfo[key],
+        ...req.body[key],
+      }
+    } else {
+        updateUserInfo[key] = req.body[key];
+      }
+    }
+    usersList.splice(findIndex, 1, updateUserInfo);
+    //usersList[findIndex] = req.body[key];
+    res.status(200).json({ success: true});
+  })
 
 // delete user ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 app.delete("/delete-user/:cell", (req, res) => {
